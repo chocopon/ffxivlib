@@ -11,23 +11,23 @@ static class Constants
     #region Pointer paths
     public static readonly List<int> PCPTR = new List<int>
     {
-        0x010BED9C,
+        0x010BED9C,//checked 2013.11.28
         0x0
     };
     // This is the widget for party
     public static readonly List<int> PARTYPTR = new List<int>
     {
-        0x0014B600,
+        0x0014B590,//pre 0x0014B600 2013.11.28
         0x0
     };
     public static readonly List<int> TARGETPTR = new List<int>
     {
-        0x00C87644,
+        0x00C87524,//pre 0x00C87644 2013.11.28
         0x28
     };
     public static readonly List<int> PLAYERPTR = new List<int>
     {
-        0x5C570,
+        0x5C570,//checked 2013.11.28
         0x0
     };
     public const uint ENTITY_ARRAY_SIZE = 100;

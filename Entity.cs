@@ -12,9 +12,9 @@ namespace ffxivlib
         [StructLayout(LayoutKind.Explicit, Pack=1)]
         public struct ENTITYINFO
         {
-            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
             [FieldOffset(0x30)]
-            public string name;
+            public byte[] name_data;
             // Not exactly PC ID...
             [MarshalAs(UnmanagedType.I4)]
             [FieldOffset(0x74)]
@@ -79,6 +79,14 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I2)]
             [FieldOffset(0x16A4)]
             public short mGP;
+
+            public string name
+            {
+                get
+                {
+                    return Encoding.UTF8.GetString(name_data).Split(new char[] { '\0' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                }
+            }
 
         };
         public Entity(ENTITYINFO _structure, IntPtr _address)
