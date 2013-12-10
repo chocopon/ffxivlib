@@ -17,8 +17,6 @@ namespace CurrentTarget
             {
                 Entity currentTarget = instance.getCurrentTarget();
                 Entity mouseoverTarget = instance.getMouseoverTarget();
-                PartyMember p = instance.getPartyMemberInfo(0);
-
                 if (currentTarget != null)
                 {
                     Console.WriteLine("Current target => {0} : {1}/{2} HP", currentTarget.structure.name, currentTarget.structure.cHP, currentTarget.structure.mHP);
