@@ -1667,8 +1667,8 @@
   </Buff>
   <Buff>
     <id>333</id>
-    <name>Physical Damage Up</name>
-    <description>The amount of damage dealt by physical attacks is increased.</description>
+    <name>Allagan Rot</name>
+    <description>An ancient pestilence corrupts your humours and will soon cause severe physical damage.</description>
   </Buff>
   <Buff>
     <id>334</id>
