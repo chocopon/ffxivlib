@@ -109,3 +109,6 @@ UpgradeLog*.XML
 us.stackdump
 test_project/TestApp/ffxivlib.dll
 html/
+Tools/ResourcesDumper/x86/SQLite.Interop.dll
+Resources/Resources.zip
+ffxivlib.sln.DotSettings

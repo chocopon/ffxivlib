@@ -1,10 +1,11 @@
 ﻿namespace ffxivlib
 {
     /// <summary>
-    /// Job ID as used in various structures
+    ///     Job ID as used in various structures
     /// </summary>
     public enum JOB : byte
     {
+// ReSharper disable InconsistentNaming
         GLD = 0x1,
         PGL = 0x2,
         MRD = 0x3,
@@ -35,9 +36,16 @@
         SCH = 0x2C,
         Chocobo = 0x2D,
         Pet = 0x2E
+        // ReSharper restore InconsistentNaming
+    }
+
+    public enum SEX : byte
+    {
+        Male = 0x0,
+        Female = 0x1
     }
     /// <summary>
-    /// Current action of an Entity (PC)
+    ///     Current action of an Entity (PC)
     /// </summary>
     public enum ENTITYSTATUS : byte
     {
@@ -50,25 +58,32 @@
         Melding = 0x07,
         SMachine = 0x08
     }
+
     /// <summary>
-    /// Status of an Entity (PC/NPC)
+    ///     Status of an Entity (PC/NPC)
     /// </summary>
     public enum STATUS : byte
     {
         Engaged = 0x01,
-        Idle = 0x02
+        Idle = 0x02,
+        Crafting = 0x05
     }
+
     /// <summary>
-    /// Type of the entity
+    ///     Type of the entity
     /// </summary>
     public enum TYPE : byte
     {
         Player = 0x01,
         Mob = 0x02,
-        NPC = 0x03
+        NPC = 0x03,
+        Aetheryte = 0x05,
+        Gathering = 0x06,
+        Minion = 0x09
     }
+
     /// <summary>
-    /// Icons
+    ///     Icons
     /// </summary>
     public enum ICON : byte
     {
@@ -78,37 +93,59 @@
         GM = 0x2,
         SGM = 0x3,
         Clover = 0x4,
-        DC = 0x5,
+        Dc = 0x5,
         Smiley = 0x6,
-        Red_cross = 0x9,
-        Grey_DC = 0xA,
+        RedCross = 0x9,
+        GreyDc = 0xA,
         Processing = 0xB,
         Busy = 0xC,
         Duty = 0xD,
-        Processing_yellow = 0xE,
-        Processing_grey = 0xF,
+        ProcessingYellow = 0xE,
+        ProcessingGrey = 0xF,
         Cutscene = 0x10,
         Chocobo = 0x12,
         Sitting = 0x13,
-        Wrench_yellow = 0x14,
+        WrenchYellow = 0x14,
         Wrench = 0x15,
         Dice = 0x16,
-        Processing_green = 0x17,
+        ProcessingGreen = 0x17,
         Sword = 0x18,
         DutyFinder = 0x19,
-        Alliance_leader = 0x1A,
-        Alliance_blue_leader = 0x1B,
-        Alliance_blue = 0x1C,
+        AllianceLeader = 0x1A,
+        AllianceBlueLeader = 0x1B,
+        AllianceBlue = 0x1C,
         Sprout = 0x1F,
         Gil = 0x20
     }
+
     /// <summary>
-    /// Because SE likes to use values that don't make sense.
+    ///     Because SE likes to use values that don't make sense.
     /// </summary>
     public enum CURRENTTARGET : byte
     {
         Own = 0x1,
         True = 0x2,
         False = 0x4,
+    }
+
+    /// <summary>
+    /// This is used for getCurrentEquipment()
+    /// </summary>
+    public enum EQUIP_POS : byte
+    {
+        MainHand = 0,
+        OffHand = 1,
+        Head = 2,
+        Body = 3,
+        Hands = 4,
+        Waist = 5,
+        Legs = 6,
+        Feet = 7,
+        Neck = 8,
+        Ears = 9,
+        Wrists = 10,
+        LeftRing = 11,
+        RightRing = 12,
+        SoulCrystal = 13
     }
 }

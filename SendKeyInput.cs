@@ -5,14 +5,17 @@ using System.Threading;
 
 namespace ffxivlib
 {
-    internal class SendKeyInput
+    public class SendKeyInput
     {
         #region Imports
+
         // Return Type: BOOL->int     
         //fBlockIt: BOOL->int     
         [DllImport("user32.dll", EntryPoint = "BlockInput")]
         [return: MarshalAs(UnmanagedType.Bool)]
+// ReSharper disable UnusedMember.Local
         private static extern bool BlockInput([MarshalAs(UnmanagedType.Bool)] bool fBlockIt);
+
 
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true)]
@@ -68,24 +71,26 @@ namespace ffxivlib
         [DllImport("user32.dll", CharSet = CharSet.Ansi, SetLastError = true)]
         //internal static extern IntPtr SetFocus (IntPtr hwnd);
         private static extern IntPtr SetFocus(IntPtr hwnd);
-
+        // ReSharper restore UnusedMember.Local
         #endregion
 
         #region WMCode
 
         /// <summary>
-        /// WMCodes
+        ///     WMCodes
         /// </summary>
+// ReSharper disable InconsistentNaming
         private const uint WM_KEYDOWN = 0x100;
-
         private const uint WM_KEYUP = 0x101;
         private const uint WM_CHAR = 0x0102;
+        // ReSharper disable once UnusedMember.Local
         private const uint WM_UNICHAR = 0x0109;
         public const uint MAPVK_VK_TO_VSC = 0x00;
         public const uint MAPVK_VSC_TO_VK = 0x01;
         public const uint MAPVK_VK_TO_CHAR = 0x02;
         public const uint MAPVK_VSC_TO_VK_EX = 0x03;
         public const uint MAPVK_VK_TO_VSC_EX = 0x04;
+        // ReSharper restore InconsistentNaming
         //public const uint WM_UNICHAR = 0x0109;
 
         //public enum WMCode : uint
@@ -101,6 +106,7 @@ namespace ffxivlib
 
         public enum VKKeys
         {
+// ReSharper disable InconsistentNaming
             LBUTTON = 0x01, // Left mouse button
             RBUTTON = 0x02, // Right mouse button
             CANCEL = 0x03, // Control-break processing
@@ -413,68 +419,100 @@ namespace ffxivlib
             VK_LCONTROL A2 Left CONTROL key 
             VK_RCONTROL A3 Right CONTROL key 
             */
+            // ReSharper restore InconsistentNaming
         }
 
         #endregion
 
-        private readonly IntPtr FFXIVWindow;
+        private readonly IntPtr _ffxivWindow;
+        private static SendKeyInput _instance;
 
         /// <summary>
-        /// Constructor
+        ///     Constructor
         /// </summary>
-        /// <param name="FFXIVWindow"></param>
-        public SendKeyInput(IntPtr FFXIVWindow)
+        /// <param name="ffxivWindow"></param>
+        private SendKeyInput(IntPtr ffxivWindow)
         {
-            this.FFXIVWindow = FFXIVWindow;
+            _ffxivWindow = ffxivWindow;
+        }
+
+        public static SendKeyInput SetInstance(IntPtr ffxivWindow)
+        {
+            return _instance ?? (_instance = new SendKeyInput(ffxivWindow));
+        }
+
+        public static SendKeyInput GetInstance()
+        {
+            if (_instance == null)
+                throw new Exception("Something terrible happened.");
+            return _instance;
         }
 
         /// <summary>
-        /// Send text string to game window
+        ///     Send text string to game window
         /// </summary>
         /// <param name="cString"></param>
-        public void ConvertTextToInput(IEnumerable<char> cString, int delay=300)
+        /// <param name="delay"></param>
+        public void ConvertTextToInput(IEnumerable<char> cString, int delay = 300)
         {
             //SetFocus(FFXIVWindow);
             foreach (char c in cString)
-            {
-                PostMessageWPTR(FFXIVWindow, WM_CHAR, new IntPtr(c), IntPtr.Zero); //Send the chars one by one
-            }
+                PostMessageWPTR(_ffxivWindow, WM_CHAR, new IntPtr(c), IntPtr.Zero); //Send the chars one by one
             Thread.Sleep(delay);
             SendReturnKey();
         }
 
         /// <summary>
-        /// Send Enter keypress
+        ///     Send Enter keypress
         /// </summary>
         public void SendReturnKey(int delay = 100)
         {
             //
-            PostMessage(FFXIVWindow, WM_KEYDOWN, VKKeys.RETURN,
-                        (Int32)(MapVirtualKey((UInt16)VKKeys.RETURN, 0x00) << 16));
+            PostMessage(_ffxivWindow, WM_KEYDOWN, VKKeys.RETURN,
+                        (Int32) (MapVirtualKey((UInt16) VKKeys.RETURN, 0x00) << 16));
             Thread.Sleep(delay);
-            PostMessage(FFXIVWindow, WM_KEYUP, VKKeys.RETURN,
-                        (Int32)(MapVirtualKey((UInt16)VKKeys.RETURN, 0x00) << 16));
+            PostMessage(_ffxivWindow, WM_KEYUP, VKKeys.RETURN,
+                        (Int32) (MapVirtualKey((UInt16) VKKeys.RETURN, 0x00) << 16));
         }
 
         /// <summary>
-        /// Send KeyPress to FFXIV Client
+        /// Send a Virtual Key to FFXIV
         /// </summary>
-        /// <param name="Key"></param>
-        public void SendKeyPress(VKKeys Key, int delay = 100)
+        /// <param name="key">Virtual Key to press</param>
+        /// <param name="keyup">Should we keypress up (default: true)</param>
+        /// <param name="delay">Delay between keydown and keyup (default: 100ms)</param>
+        public void SendKeyPress(VKKeys key, bool keyup = true, int delay = 100)
         {
-            PostMessage(FFXIVWindow, WM_KEYDOWN, Key, 0);
-            Thread.Sleep(delay);
-            PostMessage(FFXIVWindow, WM_KEYUP, Key, 0);
+            PostMessage(_ffxivWindow, WM_KEYDOWN, key, 0);
+            if (keyup)
+                {
+                    Thread.Sleep(delay);
+                    PostMessage(_ffxivWindow, WM_KEYUP, key, 0);
+                }
         }
 
         public void SetFocus()
         {
-            SetFocus(FFXIVWindow);
+            SetFocus(_ffxivWindow);
         }
 
-        public void PostMessagePTR(uint Msg, IntPtr wParam, IntPtr lParam)
+        public void PostMessagePTR(uint msg, IntPtr wParam, IntPtr lParam)
         {
-            PostMessagePTR(FFXIVWindow, Msg, wParam, lParam);
+            PostMessagePTR(_ffxivWindow, msg, wParam, lParam);
+        }
+    }
+
+    public partial class FFXIVLIB
+    {
+        /// <summary>
+        ///     This function sends a keystroke to the Final Fantasy XIV window
+        /// </summary>
+        /// <param name="key">Key to press (see Virtual Key Codes for information)</param>
+        /// <param name="keyup">Should we keyup after keydown (default: true)</param>
+        /// <param name="delay">(Optional) Delay between keypress down and keypress up</param>
+        public void SendKey(IntPtr key, bool keyup = true, int delay = 100)
+        {
+            Ski.SendKeyPress((SendKeyInput.VKKeys) key, keyup, delay);
         }
     }
 }
