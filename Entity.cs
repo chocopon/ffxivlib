@@ -281,13 +281,13 @@ namespace ffxivlib
         /// <returns></returns>
         public Entity UpdateEntityInfo(Entity ent)
         {
-            IntPtr address = ent.address;
+            IntPtr address = ent.Address;
             if (address == IntPtr.Zero)
                 return null;
 
             try
             {
-                Entity e = new Entity(mr.CreateStructFromAddress<Entity.ENTITYINFO>(address), address);
+                Entity e = new Entity(_mr.CreateStructFromAddress<Entity.ENTITYINFO>(address), address);
                 return e;
             }
             catch (Exception)
