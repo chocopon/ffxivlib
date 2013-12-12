@@ -274,6 +274,28 @@ namespace ffxivlib
             return results;
         }
 
+        /// <summary>
+        /// This function updates the latest information an entity
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <returns></returns>
+        public Entity UpdateEntityInfo(Entity ent)
+        {
+            IntPtr address = ent.address;
+            if (address == IntPtr.Zero)
+                return null;
+
+            try
+            {
+                Entity e = new Entity(mr.CreateStructFromAddress<Entity.ENTITYINFO>(address), address);
+                return e;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         #endregion
     }
 }
