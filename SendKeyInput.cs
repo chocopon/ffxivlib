@@ -33,6 +33,10 @@ namespace ffxivlib
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool PostMessageWPTR(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
+        //work for unicode
+        [DllImport("user32.dll", EntryPoint = "PostMessageW")]
+        public static extern int PostMessageW(IntPtr hWnd, UInt32 Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+
         /*
         void PostMessageSafe( HandleRef hWnd, uint msg, IntPtr wParam, IntPtr lParam )
         {
@@ -458,6 +462,25 @@ namespace ffxivlib
             //SetFocus(FFXIVWindow);
             foreach (char c in cString)
                 PostMessageWPTR(_ffxivWindow, WM_CHAR, new IntPtr(c), IntPtr.Zero); //Send the chars one by one
+            Thread.Sleep(delay);
+            SendReturnKey();
+        }
+
+        /// <summary>
+        /// Send multibyte text string to game window ex. chat window
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="delay"></param>
+        public void ConverToTextToInputM(string text, int delay = 300)
+        {
+            byte[] data = System.Text.Encoding.Unicode.GetBytes(text);
+            System.IO.MemoryStream ms = new System.IO.MemoryStream(data);
+            System.IO.BinaryReader br = new System.IO.BinaryReader(ms);
+
+            while (ms.Position < ms.Length)
+            {
+                PostMessageW(_ffxivWindow, WM_CHAR, (IntPtr)(br.ReadInt16()), null);
+            }
             Thread.Sleep(delay);
             SendReturnKey();
         }

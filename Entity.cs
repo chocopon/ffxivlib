@@ -131,6 +131,9 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2DB9)] public SEX Sex;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)] [FieldOffset(0x2F48)] public BUFF[] Buffs;
 
+            /// <summary>
+            /// Support for Multibye languages
+            /// </summary>
             public string Name
             {
                 get
