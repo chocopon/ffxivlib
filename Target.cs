@@ -140,6 +140,40 @@ namespace ffxivlib
                 }
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <returns></returns>
+        public void SetCurrentTarget(Entity ent)
+        {
+            Target t = GetTargets();
+            t.Modify("CurrentTarget",(int)ent.Address);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <returns></returns>
+        public void SetFocusTarget(Entity ent)
+        {
+            Target t = GetTargets();
+            t.Modify("FocusTarget", (int)ent.Address);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <returns></returns>
+        public void SetPreviousTarget(Entity ent)
+        {
+            Target t = GetTargets();
+            t.Modify("PreviousTarget",(int) ent.Address);
+        }
+
         #endregion
     }
 }
