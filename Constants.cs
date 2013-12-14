@@ -30,7 +30,7 @@ public static class Constants
 
     internal static readonly List<int> TARGETPTR = new List<int>
         {
-            0x00C87644,
+            0x00C87524,//for japanese version
             0x28
         };
 
