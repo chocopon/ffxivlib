@@ -8,7 +8,7 @@ namespace ffxivlib
     {
         /*
          * At 0x1 the character name is available, but C# throws a Run time error because it's not aligned on proper boundaries,
-         * therefore I'm not making it available for now as that'd require me to unalign pretty much everything else.
+         * therefore I'm not making it available for now as that'd require me to unalign everything else.
          * Refer to ENTITYINFO(0) for name.
          */
 
@@ -79,6 +79,8 @@ namespace ffxivlib
         public byte BOT { get; set; }
 
         public byte FSH { get; set; }
+
+        public byte ACN { get; set; }
 
         #endregion
 
@@ -283,6 +285,7 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x84)] public byte MIN;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x86)] public byte BOT;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x88)] public byte FSH;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x8A)] public byte ACN;
 
             #endregion
 
