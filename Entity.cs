@@ -114,7 +114,8 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x189)] public bool IsGM;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x18A)] public byte Icon;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x195)] public STATUS IsEngaged;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xD58)] public int TargetId;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x1A0)] public int TargetId;
+//            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xD58)] public int TargetId;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x168A)] public byte GrandCompany;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x168B)] public byte GrandCompanyRank;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x168E)] public byte Title;
@@ -129,6 +130,8 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16A8)] public short MaxCP;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2DB8)] public byte Race;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2DB9)] public SEX Sex;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2DD2)] public byte Aggro;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)] [FieldOffset(0x2F48)] public BUFF[] Buffs;
 
             /// <summary>
@@ -195,10 +198,12 @@ namespace ffxivlib
             if (id >= Constants.ENTITY_ARRAY_SIZE)
                 throw new IndexOutOfRangeException();
             IntPtr pointer = IntPtr.Add(_mr.GetArrayStart(Constants.PCPTR), id*0x4);
+            IntPtr address = _mr.ResolvePointer(pointer);
+            if (address == IntPtr.Zero) return null;
             try
                 {
-                    var e = new Entity(_mr.CreateStructFromPointer<Entity.ENTITYINFO>(pointer),
-                        _mr.ResolvePointer(pointer));
+                    var e = new Entity(_mr.CreateStructFromAddress<Entity.ENTITYINFO>(address),
+                        address);
                     return e;
                 }
             catch (Exception)
@@ -231,9 +236,10 @@ namespace ffxivlib
             for (int i = 0; i < Constants.ENTITY_ARRAY_SIZE; i++)
                 {
                     IntPtr address = pointer + (i*0x4);
+                    if (address == IntPtr.Zero) continue;
                     try
                         {
-                            entityList.Add(new Entity(_mr.CreateStructFromPointer<Entity.ENTITYINFO>(address), address));
+                            entityList.Add(new Entity(_mr.CreateStructFromPointer<Entity.ENTITYINFO>(address), _mr.ResolvePointer(address)));
                         }
                     catch (Exception)
                         {
@@ -263,10 +269,11 @@ namespace ffxivlib
             var entityList = new List<Entity>();
             for (int i = 0; i < arraySize; i++)
                 {
-                    IntPtr address = pointer + (i*0x4);
+                    IntPtr address =_mr.ResolvePointer( pointer + (i*0x4));
+                    if (address == IntPtr.Zero) continue;
                     try
                         {
-                            entityList.Add(new Entity(_mr.CreateStructFromPointer<Entity.ENTITYINFO>(address), address));
+                            entityList.Add(new Entity(_mr.CreateStructFromAddress<Entity.ENTITYINFO>(address), address));
                         }
                     catch (Exception)
                         {
@@ -297,6 +304,36 @@ namespace ffxivlib
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public Entity GetEntityByPCID(int id)
+        {
+            var pointerPath = Constants.PCPTR;
+            uint arraySize = Constants.ENTITY_ARRAY_SIZE;
+            IntPtr pointer = _mr.GetArrayStart(pointerPath);
+            for (int i = 0; i < arraySize; i++)
+            {
+                IntPtr address =  _mr.ResolvePointer( pointer + (i * 0x4));
+                if (address == IntPtr.Zero) continue;
+                try
+                {
+                    Entity ent = new Entity(_mr.CreateStructFromAddress<Entity.ENTITYINFO>(address), address);
+                    if (ent.PCId == id || ent.NPCId == id)
+                    {
+                        return ent;
+                    }
+                }
+                catch (Exception)
+                {
+                    // No Entity at this position
+                }
+            }
+            return null;
         }
 
         #endregion
