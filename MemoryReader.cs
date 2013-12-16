@@ -184,6 +184,8 @@ namespace ffxivlib
         /// <returns>Address pointed</returns>
         public IntPtr ResolvePointer(IntPtr pointer)
         {
+            if (pointer == IntPtr.Zero) return IntPtr.Zero;
+
             int outres;
             byte[] structure = ReadAdress(pointer, 4, out outres);
             var target = (IntPtr) BitConverter.ToInt32(structure, 0);
