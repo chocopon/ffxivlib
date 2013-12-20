@@ -181,13 +181,13 @@ public static class Constants
     // Simple representation of pointer paths, do not add base module, last member will be expected to be the offset so may have to add extra 0 at the end if you dont need it
     internal static readonly List<int> PCPTR = new List<int>
         {
-            0x010BED9C,
+            0x0119A514,
             0x0
         };
 
     internal static readonly List<int> GATHERINGPTR = new List<int>
         {
-            0x010D5C00,
+            0x1193FC8,
             0x0
         };
 
@@ -199,13 +199,14 @@ public static class Constants
 
     internal static readonly List<int> TARGETPTR = new List<int>
         {
-            0x00C87524,//for japanese version
-            0x28
+            //0x00C87524,//for japanese version
+            //0x28
+            0x1071770
         };
 
     internal static readonly List<int> PLAYERPTR = new List<int>
         {
-            0x5C570,
+            0x7CF70,//checked 
             0x0
         };
 
@@ -241,6 +242,13 @@ public static class Constants
         0x00660280,
         0x4
     };
+
+    internal static readonly List<int> MOVINGSTATUS = new List<int>
+    {
+        0x011C1208,
+        0x0
+    };
+
 
     #endregion
 
