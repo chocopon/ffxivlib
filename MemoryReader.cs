@@ -251,7 +251,7 @@ namespace ffxivlib
                     handle.Free();
                 }
             else
-                throw new Exception("Nothing at this address.");
+                return default(T);
             return structure;
         }
 
@@ -278,7 +278,7 @@ namespace ffxivlib
                     handle.Free();
                 }
             else
-                throw new Exception("Nothing at this address.");
+                return default(T);
             return structure;
         }
 

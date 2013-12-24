@@ -63,6 +63,10 @@ namespace ffxivlib
 
         public byte Title { get; set; }
 
+        public JOB Job { get; set; }
+
+        public byte Level { get; set; }
+
         public int CurrentHP { get; set; }
 
         public int MaxHP { get; set; }
@@ -85,7 +89,31 @@ namespace ffxivlib
 
         public SEX Sex { get; set; }
 
+        public byte Aggro { get; set; }
+
         public BUFF[] Buffs { get; set; }
+
+        public bool IsCasting { get; set; }
+
+        public short CastingSpellId { get; set; }
+
+        public float CastingProgress { get; set; }
+
+        public float CastingTime { get; set; }
+
+        #endregion
+
+        #region Extra properties
+
+        public int CastingPercentage
+        {
+            get
+            {
+                if (IsCasting && CastingTime > 0)
+                    return (int)((CastingProgress / CastingTime) * 100);
+                return 0;
+            }
+        }
 
         #endregion
 
@@ -112,13 +140,14 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x174)] public int ModelID;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x188)] public ENTITYSTATUS PlayerStatus;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x189)] public bool IsGM;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x18A)] public byte Icon;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x194)] public ICON Icon;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x195)] public STATUS IsEngaged;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x1A0)] public int TargetId;
-//            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xD58)] public int TargetId;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x168A)] public byte GrandCompany;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x168B)] public byte GrandCompanyRank;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x168E)] public byte Title;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xD78)] public int TargetId;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169A)] public byte GrandCompany;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169B)] public byte GrandCompanyRank;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169E)] public byte Title;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1698)] public JOB Job;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1699)] public byte Level;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16A0)] public int CurrentHP;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16A4)] public int MaxHP;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16A8)] public int CurrentMP;
@@ -128,13 +157,14 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B4)] public short MaxGP;
             [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B6)] public short CurrentCP;
             [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B8)] public short MaxCP;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2DB8)] public byte Race;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2DB9)] public SEX Sex;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2E58)] public byte Race;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2E59)] public SEX Sex;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2E72)] public byte Aggro;
-
-//            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)] [FieldOffset(0x2F48)] public BUFF[] Buffs;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)] [FieldOffset(0x2FF8)] public BUFF[] Buffs;
-
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x3170)] public bool IsCasting;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x3174)] public short CastingSpellId;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x31A4)] public float CastingProgress;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x31A8)] public float CastingTime;
             /// <summary>
             /// Support for Multibye languages
             /// </summary>
@@ -201,16 +231,13 @@ namespace ffxivlib
             IntPtr pointer = IntPtr.Add(_mr.GetArrayStart(Constants.PCPTR), id*0x4);
             IntPtr address = _mr.ResolvePointer(pointer);
             if (address == IntPtr.Zero) return null;
-            try
+            Entity.ENTITYINFO en = _mr.CreateStructFromAddress<Entity.ENTITYINFO>(address);
+            if (!Equals(en, default(Entity.ENTITYINFO)))
                 {
-                    var e = new Entity(_mr.CreateStructFromAddress<Entity.ENTITYINFO>(address),
-                        address);
+                    Entity e = new Entity(en, address);
                     return e;
                 }
-            catch (Exception)
-                {
-                    return null;
-                }
+            return null;
         }
 
         /// <summary>
@@ -237,14 +264,11 @@ namespace ffxivlib
             for (int i = 0; i < Constants.ENTITY_ARRAY_SIZE; i++)
                 {
                     IntPtr address = pointer + (i*0x4);
-                    if (address == IntPtr.Zero) continue;
-                    try
+                    Entity.ENTITYINFO en = _mr.CreateStructFromPointer<Entity.ENTITYINFO>(address);
+                    if (!Equals(en, default(Entity.ENTITYINFO)))
                         {
-                            entityList.Add(new Entity(_mr.CreateStructFromPointer<Entity.ENTITYINFO>(address), _mr.ResolvePointer(address)));
-                        }
-                    catch (Exception)
-                        {
-                            // No Entity at this position
+                            Entity e = new Entity(en, address);
+                            entityList.Add(e);
                         }
                 }
             var results = entityList.Where(obj => obj.Structure.Name == name);
@@ -270,15 +294,12 @@ namespace ffxivlib
             var entityList = new List<Entity>();
             for (int i = 0; i < arraySize; i++)
                 {
-                    IntPtr address =_mr.ResolvePointer( pointer + (i*0x4));
-                    if (address == IntPtr.Zero) continue;
-                    try
+                    IntPtr address = pointer + (i*0x4);
+                    Entity.ENTITYINFO en = _mr.CreateStructFromPointer<Entity.ENTITYINFO>(address);
+                    if (!Equals(en, default(Entity.ENTITYINFO)))
                         {
-                            entityList.Add(new Entity(_mr.CreateStructFromAddress<Entity.ENTITYINFO>(address), address));
-                        }
-                    catch (Exception)
-                        {
-                            // No Entity at this position
+                            Entity e = new Entity(en, address);
+                            entityList.Add(e);
                         }
                 }
             var results = entityList.Where(e => e.Structure.MobType == type);
