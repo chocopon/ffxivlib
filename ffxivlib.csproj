@@ -78,6 +78,7 @@
     <Compile Include="PartyMember.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Recast.cs" />
     <Compile Include="ResourceParser.cs" />
     <Compile Include="SendKeyInput.cs" />
     <Compile Include="Serializer.cs" />

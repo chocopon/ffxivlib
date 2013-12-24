@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public static class Constants
+public static partial class Constants
 {
-// ReSharper disable InconsistentNaming
+    // ReSharper disable InconsistentNaming
     internal const string PROCESS_NAME = "ffxiv";
 
     #region Pointer paths
@@ -70,13 +70,6 @@ public static class Constants
         0x8AF6C,
         0x4
     };
-
-    internal static readonly List<int> MOVINGSTATUS = new List<int>
-    {
-        0x011C1208,
-        0x0
-    };
-
 
     #endregion
 
