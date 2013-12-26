@@ -263,8 +263,9 @@ namespace ffxivlib
             var entityList = new List<Entity>();
             for (int i = 0; i < Constants.ENTITY_ARRAY_SIZE; i++)
                 {
-                    IntPtr address = pointer + (i*0x4);
-                    Entity.ENTITYINFO en = _mr.CreateStructFromPointer<Entity.ENTITYINFO>(address);
+                    IntPtr address = _mr.ResolvePointer(pointer + (i*0x4));
+                if(address == IntPtr.Zero)continue;
+                    Entity.ENTITYINFO en = _mr.CreateStructFromAddress<Entity.ENTITYINFO>(address);
                     if (!Equals(en, default(Entity.ENTITYINFO)))
                         {
                             Entity e = new Entity(en, address);
@@ -294,8 +295,9 @@ namespace ffxivlib
             var entityList = new List<Entity>();
             for (int i = 0; i < arraySize; i++)
                 {
-                    IntPtr address = pointer + (i*0x4);
-                    Entity.ENTITYINFO en = _mr.CreateStructFromPointer<Entity.ENTITYINFO>(address);
+                    IntPtr address = _mr.ResolvePointer(pointer + (i*0x4));
+                    if (address == IntPtr.Zero) continue;
+                    Entity.ENTITYINFO en = _mr.CreateStructFromAddress<Entity.ENTITYINFO>(address);
                     if (!Equals(en, default(Entity.ENTITYINFO)))
                         {
                             Entity e = new Entity(en, address);
