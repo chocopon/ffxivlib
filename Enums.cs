@@ -33,9 +33,9 @@
         BRD = 0x17,
         WHM = 0x18,
         BLM = 0x19,
-        ACN = 0x2A,
-        SMN = 0x2B,
-        SCH = 0x2C,
+        ACN = 0x1A,
+        SMN = 0x1B,
+        SCH = 0x1C,
         Chocobo = 0x2D,
         Pet = 0x2E
         // ReSharper restore InconsistentNaming

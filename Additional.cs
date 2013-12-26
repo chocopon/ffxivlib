@@ -3,6 +3,9 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 namespace ffxivlib
 {
+    /// <summary>
+    /// This class will be merged into ActionInfo class
+    /// </summary>
     public class Additional : BaseObject<Additional.ADDITIONAL>
     {
         #region Constructor

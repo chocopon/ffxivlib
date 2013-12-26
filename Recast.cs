@@ -3,100 +3,108 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 namespace ffxivlib
 {
-    public class Recast : BaseObject<Recast.RECAST>
+    #region Unmanaged structure
+
+    [StructLayout(LayoutKind.Explicit, Pack = 1)]
+    public struct RECAST
     {
-        #region Constructor
-
-        public Recast(RECAST structure, IntPtr address)
-            : base(structure, address)
-        {
-            Initialize();
-        }
-
-        #endregion
-
-        #region Properties
-
-        public bool IsRecast { get; set; }
-        public float ElapsedTime { get; set; }
-        public float RecastTime { get; set; }
-        public float Unkown { get; set; }
-        #endregion
-
-        #region Unmanaged structure
-
-        [StructLayout(LayoutKind.Explicit, Pack = 1)]
-        public struct RECAST
-        {
-            [MarshalAs(UnmanagedType.I1)][FieldOffset(0)]public bool IsRecast;
-            [MarshalAs(UnmanagedType.R4)][FieldOffset(0x04)]public float Unkown;
-            [MarshalAs(UnmanagedType.R4)][FieldOffset(0x08)]public float ElapsedTime;
-            [MarshalAs(UnmanagedType.R4)][FieldOffset(0x0C)]public float RecastTime;
-        }
-
-        #endregion
+        [MarshalAs(UnmanagedType.I1)]
+        [FieldOffset(0)]
+        public bool IsRecast;
+        [MarshalAs(UnmanagedType.I4)]
+        [FieldOffset(0x04)]
+        public int AdditionalActionID;//
+        [MarshalAs(UnmanagedType.R4)]
+        [FieldOffset(0x08)]
+        public float ElapsedTime;
+        [MarshalAs(UnmanagedType.R4)]
+        [FieldOffset(0x0C)]
+        public float RecastTime;
+        [MarshalAs(UnmanagedType.R4)]
+        [FieldOffset(0x10)]
+        public float Unkown2;//
     }
 
-    public partial class FFXIVLIB
-    {
-        #region Public methods
-
-        public Recast GetRecast(int id)
-        {
-            if (id >= Constants.RECAST_ARRAY_SIZE)
-                throw new IndexOutOfRangeException();
-            IntPtr address = IntPtr.Add(_mr.GetArrayStart(Constants.RECASTPTR), id * 0x14);
-            Recast.RECAST recast = _mr.CreateStructFromAddress<Recast.RECAST>(address);
-            return new Recast(recast, address);
-        }
-
-        #endregion
-    }
-}
-/*
-BASE 012F0000
-02322540 デジョン
-02322150 ランパート
-
- * ESI 01F62050
-ESI + EDX*4 +10C
-
-ランパート 0
-コンバレセンス 1
-アウェアネス 2
-センチネル 3
-挑発 4
-鋼の意思 5
-ファイトオアフライト 6
-ブルワーク 7
-サークルオブドゥーム 8
-かばう 9
-ウィズイン A
-インビンシブル B
-スプリント 37
-フラッシュ　39 GCD
-
-01F62050
-
-EDX = EAX+EAX*4=EAX*5
-EAX
- */
 
 
-public static partial class Constants
-{
-    #region Array size
-    
-    internal const uint RECAST_ARRAY_SIZE = 60;
+    /*
+10	202	ランパート	0	1
+12	212	コンバレセンス	1	1
+13	213	アウェアネス	2	1
+17	201	センチネル	3	1
+18	215	挑発	4	1
+19	203	鋼の意志	5	1
+20	216	ファイト・オア・フライト	6	1
+22	217	ブルワーク	7	1
+23	211	サークル・オブ・ドゥーム	8	1
+27	3001	かばう	9	13
+29	3003	スピリッツウィズイン	10	13
+30	3002	インビンシブル	11	13
+32	402	フォーサイト	0	3
+33	406	フラクチャー	1	3
+34	401	ブラッドバス	2	3
+36	415	マーシーストローク	3	3
+38	409	バーサク	4	3
+40	413	スリル・オブ・バトル	5	3
+43	416	ホルムギャング	6	3
+44	417	ヴェンジェンス	7	3
+48	3201	ディフェンダー	9	15
+52	3205	ウォークライ	10	15
+55	302	フェザーステップ	0	2
+57	301	内丹	1	2
+59	312	発勁	2	2
+60	306	金剛の構え	3	2
+63	305	紅蓮の構え	4	14
+64	3105	鉄山靠	5	2
+65	316	マントラ	6	2
+67	307	空鳴拳	7	2
+69	317	踏鳴	8	2
+73	3102	疾風の構え	9	2
+77	501	キーンフラーリ	0	4
+80	502	気合	1	4
+82	505	足払い	2	4
+83	504	ライフサージ	3	4
+85	509	捨身	4	4
+92	3301	ジャンプ	5	16
+93	503	竜槍	6	16
+94	3302	イルーシブジャンプ	7	16
+95	3305	スパインダイブ	8	16
+96	3303	ドラゴンダイブ	9	16
+99	604	ホークアイ	0	5
+101	602	猛者の撃	1	5
+102	618	フレイミングアロー	2	5
+103	614	ミザリーエンド	3	5
+104	601	静者の撃	4	5
+107	603	乱れ撃ち	5	5
+108	606	影縫い	6	5
+109	619	ブラントアロー	7	5
+110	611	ブラッドレッター	8	5
+112	616	リペリングショット	9	5
+118	3401	バトルボイス	10	17
+122	713	クルセードスタンス	0	6
+130	715	女神の加護	1	6
+134	716	アクアオーラ	2	6
+136	3501	神速魔	3	18
+138	3505	ディヴァインシール	4	18
+140	3502	ベネディクション	5	18
+143	810	堅実魔	0	7
+149	816	トランス	1	7
+150	811	迅速魔	2	7
+151	814	レサージー	3	7
+155	817	エーテリアルステップ	4	7
+157	813	マバリア	5	7
+158	3601	コンバート	6	19
+160	3604	アポカタスタシス	7	19
+161	3605	ウォール	8	19
+166	910	エーテルフロー	0	2A
+169	913	ウイルス	1	2A
+174	907	ベイン	2	2A
+175	912	アイ・フォー・アイ	3	2A
+176	909	ラウズ	4	2A
+181	3701	ミアズマバースト	5	2B
+183	3704	スパー	6	2B
+184	3702	エンキンドル	7	2B
 
+     */
     #endregion
-
-    #region Pointer paths
-    internal static readonly List<int> RECASTPTR = new List<int>
-    {
-        0x01032050,
-        0x100
-    };
-    #endregion
 }
-

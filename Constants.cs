@@ -35,7 +35,7 @@ public static partial class Constants
 
     internal static readonly List<int> PLAYERPTR = new List<int>
         {
-            0x7CF70,
+            0x7CF80,
             0x0
         };
 
@@ -100,7 +100,7 @@ public static partial class Constants
         /// <summary>
         /// Valid values : ja, fr, en, de
         /// </summary>
-        public static string RESOURCES_LANGUAGE = "en";
+        public static string RESOURCES_LANGUAGE = "ja";//for japanese
         internal const string BUFF_FILE = "Buffs.xml";
         internal const string ITEM_FILE = "Item.xml";
         internal const string TITLE_FILE = "Title.xml";

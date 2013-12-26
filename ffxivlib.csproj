@@ -63,6 +63,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionInfo.cs" />
     <Compile Include="Additional.cs" />
     <Compile Include="Buff.cs" />
     <Compile Include="Chatlog.cs" />
