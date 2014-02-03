@@ -33,7 +33,7 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
             [FieldOffset(0xD8)]
             public UInt32[] Additionals;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 57)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 60)]
             [FieldOffset(0x100)]
             public RECAST[] Recasts;         
         };
@@ -44,17 +44,54 @@ namespace ffxivlib
 
         #endregion
 
+
+
     }
 
     public partial class FFXIVLIB
     {
         #region Public methods
 
+        public IEnumerable<Recast> GetRecasts()
+        {
+            ActionInfo actioninfo = GetActionInfo();
+            Player player = GetPlayerInfo();
+            var recastList = new List<Recast>();
+            int[] actionIDs =  GetRecastActionIDs(player.Job);
+            for(int i=0;i<actionIDs.Length;i++)
+            {
+                RECAST r = actioninfo.Recasts[i];
+                recastList.Add(new Recast(actionIDs[i],r.ElapsedTime,r.RecastTime));
+            }
+            for (int i = 0; i < actioninfo.Additionals.Length; i++)
+            {
+                int additional = (int)actioninfo.Additionals[i];
+                if (additional == 0) continue;
+                RECAST r = actioninfo.Recasts[i+40];
+                recastList.Add(new Recast(additional, r.ElapsedTime, r.RecastTime));
+            }
+
+            RECAST sprint = actioninfo.Recasts[55];
+            recastList.Add(new Recast(3, sprint.ElapsedTime, sprint.RecastTime));
+            RECAST _return = actioninfo.Recasts[56];
+            recastList.Add(new Recast(6, _return.ElapsedTime, _return.RecastTime));
+
+            return recastList;
+        }
+
+        public Recast GetGCD()
+        {
+            ActionInfo actioninfo = GetActionInfo();
+            RECAST gcd =actioninfo.Recasts[57];
+            return new Recast(0, gcd.ElapsedTime, gcd.RecastTime);
+        }
+
         public int[] GetRecastActionIDs(JOB job)
         {
             if (job == JOB.GLD || job == JOB.PLD)
             {
                 return Constants.GLDPLDRecastActionIDs;
+
             }
             if (job == JOB.MRD || job == JOB.WAR)
             {
@@ -100,21 +137,39 @@ namespace ffxivlib
 
         #endregion
     }
+
+    public class Recast
+    {
+        #region Properties
+        public int ActionID{get;private set;}
+        public float ElapsedTime{get;private set;}
+        public float RecastTime{get;private set;}
+        #endregion        
+
+        #region Constractor
+        internal Recast(int actionId,float elapsedtime, float recasttime)
+        {
+            ActionID = actionId;
+            ElapsedTime = elapsedtime;
+            RecastTime = recasttime;
+        }
+#endregion
+
+    }
 }
 
 public static partial class Constants
 {
     #region Array size
 
-    internal const uint RECAST_ARRAY_SIZE = 57;
+    internal const uint RECAST_ARRAY_SIZE = 60;
 
     #endregion
 
     #region Pointer paths
     internal static readonly List<int> ACTIONPTR = new List<int>
     {
-        0x01032050,
-//        0x100
+        0x01033080,//2.15
     };
     #endregion
 

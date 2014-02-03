@@ -10,19 +10,19 @@ public static partial class Constants
     // Simple representation of pointer paths, do not add base module, last member will be expected to be the offset so may have to add extra 0 at the end if you dont need it
     internal static readonly List<int> PCPTR = new List<int>
         {
-            0x0119A514,
+            0x0119B514,//2.15 0x0119A514,
             0x0
         };
 
     internal static readonly List<int> GATHERINGPTR = new List<int>
         {
-            0x1193FC8,
+            0x1194FC8,//2.15　0x1193FC8,
             0x0
         };
 
     internal static readonly List<int> PARTYPTR = new List<int>
         {
-            0x4590C,
+            0x4597C,
             0x10
         };
 
@@ -30,18 +30,18 @@ public static partial class Constants
         {
             //0x00C87524,//for japanese version
             //0x28
-            0x1071770//2.1
+            0x1072770//2.1
         };
 
     internal static readonly List<int> PLAYERPTR = new List<int>
         {
-            0x7CF80,
+            0x7D120,//2.15
             0x0
         };
 
     internal static readonly List<int> CHATPTR = new List<int>
         {
-            0x106DB98,
+            0x106EB98,//from master 2.15
             0x18,
             0x204
         };
@@ -53,7 +53,7 @@ public static partial class Constants
 
     internal static readonly List<int> SERVERPTR = new List<int>
     {
-        0x1073A10,
+        0x1074A10,//2.15
         0x34,
         0x4F4,
         0x5A6
@@ -61,13 +61,13 @@ public static partial class Constants
 
     internal static readonly List<int> ZONEPTR = new List<int>
     {
-        0x8AF6C,
+        0x8AF5C,
         0x0
     };
 
     internal static readonly List<int> SUBZONEPTR = new List<int>
     {
-        0x8AF6C,
+        0x8AF5C,
         0x4
     };
 

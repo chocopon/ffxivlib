@@ -13,6 +13,7 @@ namespace ffxivlib
             : base(structure, address)
         {
             Initialize();
+            Name = base.Structure.Name;
         }
 
         #endregion
@@ -141,7 +142,7 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x188)] public ENTITYSTATUS PlayerStatus;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x189)] public bool IsGM;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x194)] public ICON Icon;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x195)] public STATUS IsEngaged;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x196)] public STATUS IsEngaged;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xD78)] public int TargetId;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169A)] public byte GrandCompany;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169B)] public byte GrandCompanyRank;

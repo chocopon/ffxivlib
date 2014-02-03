@@ -192,7 +192,7 @@ namespace ffxivlib
             return target;
         }
 
-        /// <summary>
+        /// <summary>4
         ///     Follows a pointer path (MLP)
         /// </summary>
         /// <param name="path">List of pointers to follow, last element is expected to be an offset to be added to the final result.</param>
