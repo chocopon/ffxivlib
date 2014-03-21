@@ -57,7 +57,7 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x0)] public float X;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x4)] public float Z;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x8)] public float Y;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x18)] public int PlayerID;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x10)] public int PlayerID;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] [FieldOffset(0x20)] public string Name;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x61)] public JOB Job;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x63)] public byte Level;
@@ -66,7 +66,7 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x70)] public short CurrentMP;
             [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x72)] public short MaxMP;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 15)] [FieldOffset(0x80)] public BUFF[] Buffs;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x39F)] public byte Padding;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x21F)] public byte Padding;
         };
 
         #endregion

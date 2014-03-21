@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 
 namespace ffxivlib
 {
+    //食事効果
+    //STR 272 DEX 190 VIT 210
     internal sealed class MemoryReader
     {
         #region ProcessAccessFlags

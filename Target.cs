@@ -36,9 +36,9 @@ namespace ffxivlib
         {
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0)] public int CurrentTarget;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x18)] public int MouseoverTarget;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x40)] public int FocusTarget;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x4C)] public int PreviousTarget;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x60)] public int CurrentTargetID;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x48)] public int FocusTarget;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x54)] public int PreviousTarget;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x68)] public int CurrentTargetID;
         }
 
         #endregion

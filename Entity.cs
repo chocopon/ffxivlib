@@ -44,6 +44,8 @@ namespace ffxivlib
 
         public float Heading { get; set; }
 
+        public float HitCircleR { get; set; }
+
         public byte GatheringInvisible { get; set; }
 
         public int ModelID { get; set; }
@@ -55,6 +57,10 @@ namespace ffxivlib
         public byte Icon { get; set; }
 
         public STATUS IsEngaged { get; set; }
+
+        public float AoE_X { get; set; }
+        public float AoE_Z { get; set; }
+        public float AoE_Y { get; set; }
 
         public int TargetId { get; set; }
 
@@ -137,35 +143,39 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xA4)] public float Z;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xA8)] public float Y;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xB0)] public float Heading;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xC0)] public float HitCircleR;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x11C)] public byte GatheringInvisible;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x174)] public int ModelID;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x188)] public ENTITYSTATUS PlayerStatus;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x18C)] public ENTITYSTATUS PlayerStatus;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x189)] public bool IsGM;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x194)] public ICON Icon;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x196)] public STATUS IsEngaged;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xD78)] public int TargetId;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169A)] public byte GrandCompany;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169B)] public byte GrandCompanyRank;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x169E)] public byte Title;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1698)] public JOB Job;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1699)] public byte Level;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16A0)] public int CurrentHP;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16A4)] public int MaxHP;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16A8)] public int CurrentMP;
-            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x16AC)] public int MaxMP;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B0)] public short CurrentTP;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B2)] public short CurrentGP;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B4)] public short MaxGP;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B6)] public short CurrentCP;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x16B8)] public short MaxCP;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x19E)] public STATUS IsEngaged;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x4F0)] public float AoE_X;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x4F4)] public float AoE_Z;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x4F8)] public float AoE_Y;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0xAA8)] public int TargetId;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1832)] public byte GrandCompany;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1833)] public byte GrandCompanyRank;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1836)] public byte Title;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1830)] public JOB Job;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x1831)] public byte Level;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x1838)] public int CurrentHP;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x183C)] public int MaxHP;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x1840)] public int CurrentMP;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x1844)] public int MaxMP;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x1848)] public short CurrentTP;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x184A)] public short CurrentGP;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x184C)] public short MaxGP;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x184E)] public short CurrentCP;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x1850)] public short MaxCP;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2E58)] public byte Race;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2E59)] public SEX Sex;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x2E72)] public byte Aggro;
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)] [FieldOffset(0x2FF8)] public BUFF[] Buffs;
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x3170)] public bool IsCasting;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x3174)] public short CastingSpellId;
-            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x31A4)] public float CastingProgress;
-            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x31A8)] public float CastingTime;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x3012)] public byte Aggro;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 24)] [FieldOffset(0x31B8)] public BUFF[] Buffs;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x3330)] public bool IsCasting;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x3334)] public short CastingSpellId;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x3364)] public float CastingProgress;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x3368)] public float CastingTime;
             /// <summary>
             /// Support for Multibye languages
             /// </summary>
@@ -209,6 +219,18 @@ namespace ffxivlib
             float fDistY = Math.Abs(Structure.Y - other.Structure.Y);
             float fDistZ = Math.Abs(Structure.Z - other.Structure.Z);
             return (float) Math.Sqrt((fDistX*fDistX) + (fDistY*fDistY) + (fDistZ*fDistZ));
+        }
+
+        /// <summary>
+        /// Returns the distance between current Entity and a given Entity
+        /// </summary>
+        /// <param name="other">Entity to compare to</param>
+        /// <returns>Distance</returns>
+        public float GetDistanceToWithoutZ(Entity other)
+        {
+            float fDistX = Math.Abs(Structure.X - other.Structure.X);
+            float fDistY = Math.Abs(Structure.Y - other.Structure.Y);
+            return (float)Math.Sqrt((fDistX * fDistX) + (fDistY * fDistY));
         }
 
         #endregion

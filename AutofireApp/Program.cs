@@ -12,15 +12,21 @@ namespace AutofireApp
         static List<Entity> memberlist = new List<Entity>();
         static List<Entity> enemyTargetMelist = new List<Entity>();
         static Entity me;
-
+        static bool hasBLM;
+        static Entity enBLM;
         static FFXIVLIB lib;
 
         private static void UpdateEntityList()
         {
+            hasBLM = false;
             List<string> ptmenberlist = new List<string>();
             for (int i = 0; i < 4; i++)
             {
                 PartyMember pm = lib.GetPartyMemberInfo(i);
+                if (pm.Job == JOB.BLM)
+                {
+                    hasBLM = true;
+                }
                 ptmenberlist.Add(pm.Structure.Name);
                 var list = lib.GetEntityByName(pm.Structure.Name);
                 if (list.Count() > 0)
@@ -78,8 +84,21 @@ namespace AutofireApp
             {
                 Console.WriteLine("{0} {1} {2} {3}", ct.Name, ct.X, ct.Y, ct.Z);
             }
-            //System.Threading.ThreadStart ts = new System.Threading.ThreadStart(roopBRD);
-            System.Threading.ThreadStart ts = new System.Threading.ThreadStart(roopSCH);
+            me = lib.GetEntityInfo(0);
+            System.Threading.ThreadStart ts = new System.Threading.ThreadStart(roopBRD);
+
+            if (me.Job == JOB.ARC || me.Job == JOB.BRD)
+            {
+                ts = new System.Threading.ThreadStart(roopBRD);
+            }
+            else if (me.Job == JOB.DRG)
+            {
+                ts = new System.Threading.ThreadStart(roopDRG);
+            }
+            else
+            {
+                ts = new System.Threading.ThreadStart(roopSCH);
+            }
             System.Threading.Thread th = new System.Threading.Thread(ts);
             th.Start();
 
@@ -91,6 +110,42 @@ namespace AutofireApp
             Console.WriteLine("restarted");
 
                 goto start;
+        }
+
+        private static void roopDRG()
+        {
+            while (!cancel)
+            {
+                Entity me = lib.GetEntityInfo(0);
+                if (me == null)
+                    continue;
+
+                if (me.CurrentHP == 0)
+                {
+                    System.Threading.Thread.Sleep(3000);
+                    continue;
+                }
+                int minHP = int.MaxValue;
+                Entity minEnt = null;
+                //更新
+                for (int i = 0; i < enemylist.Count; i++)
+                {
+                    enemylist[i] = lib.UpdateEntityInfo(enemylist[i]);
+                    if (minHP > enemylist[i].CurrentHP && enemylist[i].CurrentHP > 0)
+                    {
+                        if (!HasBuff(enemylist[i], 3) && !HasBuff(enemylist[i], 13)
+          && !HasBuff(enemylist[i], 15) && !HasBuff(enemylist[i], 16))
+                        {
+                            minHP = enemylist[i].CurrentHP;
+                            minEnt = enemylist[i];
+                        }
+                    }
+                }
+                if (minEnt != null && minEnt.GetDistanceTo(me)<30)
+                {
+                    lib.SetCurrentTarget(minEnt);
+                }
+            }
         }
 
         private static void roopSCH()
@@ -109,6 +164,7 @@ namespace AutofireApp
                 }
 
                 enemyTargetMelist.Clear();
+                enBLM = null;
                 for (int i = 0; i < enemylist.Count; i++)
                 {
                     Entity en = lib.UpdateEntityInfo(enemylist[i]);
@@ -116,6 +172,10 @@ namespace AutofireApp
                     if (en.TargetId == me.PCId)
                     {
                         enemyTargetMelist.Add(en);
+                    }
+                    if (en.Job == JOB.BLM)
+                    {
+                        enBLM = en;
                     }
                 }
 
@@ -158,14 +218,22 @@ namespace AutofireApp
                 if (lib.GetGCD().ElapsedTime > 0)
                     continue;
 
-                foreach (Entity en in enemylist)
+                if (enBLM != null&& enBLM.CurrentHP>0)
                 {
-                    if (en.GetDistanceTo(me) < 20 && en.IsCasting && !HasBuff(en, 160) && !HasBuff(en, 396))//396=専心
-                    {
-                        //lib.SetPreviousTarget(en);
-                        //lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_1);
-                    }
+                    lib.SetPreviousTarget(enBLM);
+                    //lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_1);
                 }
+                //foreach (Entity en in enemylist)
+                //{
+                //    if (en.GetDistanceTo(me) < 20 && en.IsCasting && !HasBuff(en, 160) && !HasBuff(en, 396))//396=専心
+                //    {
+                //        lib.SetPreviousTarget(en);
+                //        //if (!hasBLM)
+                //        //{
+                //        //    lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_1);
+                //        //}
+                //    }
+                //}
 
                 //移動中
                 DateTime d = DateTime.Now;
@@ -178,8 +246,12 @@ namespace AutofireApp
                             if (!HasBuff(en, 3) && !HasBuff(en, 13)
                                 && !HasBuff(en, 15) && !HasBuff(en, 16))
                             {//ルインラをぶっぱなす
-                                //lib.SetPreviousTarget(en);
-                                //lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_1);
+                                lib.SetPreviousTarget(en);
+                                //if (!hasBLM)
+                                //{
+                                //    lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_1);
+                                //    System.Threading.Thread.Sleep(500);
+                                //}
                             }
                         }
                     }
@@ -193,6 +265,9 @@ namespace AutofireApp
             while (!cancel)
             {
                 Entity me = lib.GetEntityInfo(0);
+                if (me == null)
+                    continue;
+
                 if (me.CurrentHP == 0)
                 {
                     System.Threading.Thread.Sleep(3000);
@@ -203,58 +278,37 @@ namespace AutofireApp
                 {
                     enemylist[i] = lib.UpdateEntityInfo(enemylist[i]);
                 }
+
                 //睡眠詠唱
                 for (int i = 0; i < enemylist.Count; i++)
                 {
                     Entity en = enemylist[i];
-                    if (en.IsCasting && en.CastingTime > 0.5 && en.GetDistanceTo(me) < 20)
+                    if (en.IsCasting && en.GetDistanceTo(me) < 20)
                     {
-                        string spell = ResourceParser.GetActionName(en.CastingSpellId);
-                        if (spell == "スリプル" || spell == "リポーズ")
-                        {
-                            lib.SetPreviousTarget(en);
-                            foreach (BUFF b in en.Buffs)
-                            {
-                                string buffname = ResourceParser.GetBuffName(b);
-                                if (buffname == "Swiftcast" || buffname == "Surecast")
-                                {
-                                    lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_5);
-                                    Console.WriteLine(buffname + spell);
-                                }
-                            }
+                        lib.SetPreviousTarget(en);
                             lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_0);
-                            Console.WriteLine(spell);
-                        }
-                    }
-                }
-                //優先順位２　回復
-                for (int i = 0; i < enemylist.Count; i++)
-                {
-                    Entity en = enemylist[i];
-                    if (en.IsCasting && en.CastingTime > 0.5 && en.GetDistanceTo(me) < 20)
-                    {
-                        string spell = ResourceParser.GetActionName(en.CastingSpellId);
-                        if (spell.Contains("ケアル") || spell.Contains("鼓舞") || spell.Contains("フィジク"))
-                        {
-                            lib.SetPreviousTarget(en);
-                            lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_0);
-                            Console.WriteLine(spell);
-                        }
                     }
                 }
 
-                //優先順位３　その他
-                for (int i = 0; i < enemylist.Count; i++)
+                Entity ent = lib.GetCurrentTarget();
+                if (ent != null)
                 {
-                    Entity en = enemylist[i];
-                    if (en.IsCasting && en.CastingTime > 0.5 && en.GetDistanceTo(me) < 20)
+
+                    if (!HasBuff(me, 130) || HasBuff(me, 122))
+                    {//ストレートショット
+                        lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_2);
+                    }
+                    else if (!HasBuff(ent, 124, me) && ent.CurrentHP > 500 && ent.Structure.Name != "炎獄の楔" && !ent.Structure.Name.Contains("ジェイル"))
+                    {//ベノムバイト
+                        lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_4);
+                    }
+                    else if (!HasBuff(ent, 129, me) && ent.CurrentHP > 500 && ent.Structure.Name != "炎獄の楔" && !ent.Structure.Name.Contains("ジェイル"))
+                    {//ウィンドバイト
+                        lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_3);
+                    }
+                    else
                     {
-                        string spell = ResourceParser.GetActionName(en.CastingSpellId);
-                        {
-                            lib.SetPreviousTarget(en);
-                            lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_0);
-                            Console.WriteLine(spell);
-                        }
+                        lib.SendKey((IntPtr)SendKeyInput.VKKeys.KEY_1);
                     }
                 }
             next:
@@ -353,6 +407,34 @@ namespace AutofireApp
 
                 }
             }
+        }
+        /// <summary>
+        /// バフがあるか
+        /// </summary>
+        /// <param name="ent"></param>
+        /// <param name="buffid"></param>
+        /// <param name="providor"></param>
+        /// <returns></returns>
+        private static bool HasBuff(Entity ent, int buffid, Entity providor=null)
+        {
+            foreach (BUFF buff in ent.Buffs)
+            {
+                if (buff.BuffID == buffid)
+                {
+                    if (providor != null)
+                    {
+                        if (buff.BuffProvider == providor.PCId)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }
