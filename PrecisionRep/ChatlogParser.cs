@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using ffxivlib;
 namespace PrecisionRep
 {
-    public class ChatlogParser
+    public partial class ChatlogParser
     {
         Regex destRegex = new Regex(@"([^\s⇒！]+\s?[^\s]+)に");
         Regex srcRegex = new Regex(@"(\w.+?)の");
@@ -42,9 +42,12 @@ namespace PrecisionRep
             bool myself = log.LogType >= 0x08 && log.LogType <= 0x0B;
             //メンバーのログか
             bool ptmember = log.LogType >= 0x10 && log.LogType <= 0x13;
-            if (!ptmember && !myself)
+            //ペットか
+            bool pets = log.LogType >= 0x40 && log.LogType <= 0x43;
+
+            if (!ptmember && !myself && !pets)
             {
-                TuikaDmgPerson =null;
+                TuikaDmgPerson = null;
                 return;
             }
             #region パーシング
@@ -71,11 +74,11 @@ namespace PrecisionRep
             string action = actionMatch.Groups[1].Value;
 
             bool crit = logbody.Contains("クリティカル");
-            bool ineffective = logbody.Contains("は無効化");
+            bool ineffective = !logbody.Contains("ミス");
 
             #endregion
 
-            if(TuikaDmgPerson!=null)
+            if (TuikaDmgPerson != null)
                 goto actiondmg;
 
             #region 攻撃(AA)
@@ -84,42 +87,62 @@ namespace PrecisionRep
 
                 if (log.ActionType == 0x29 || log.ActionType == 0xA9)//ダメージ
                 {
-                    res = AddAAHit(time,src, dest, num, crit,entities);
+                    res = AddAAHit(time, src, dest, num, crit, entities);
                     return;
                 }
                 else if (log.ActionType == 0xAA)//ミス
                 {
-                    res = AddAAMiss(time,src,dest,ineffective, entities);
+                    res = AddAAMiss(time, src, dest, ineffective, entities);
                     return;
                 }
             }
             #endregion
 
             #region アクションダメージ
-            actiondmg:
+        actiondmg:
             if (log.ActionType == 0x29 || log.ActionType == 0xA9)//ダメージ
             {
-
-                res = AddHitDamage(time, dest, num, numrate, crit, entities);
-
-
-                //if (myself)
-                //{
-                //    res = AddMyHitDamage(time, dest, num, numrate, crit, entities);
-                //}
-                //else
-                //{
-                //    res = AddHitDamage(time, dest, num, numrate, crit, entities);
-                //}
+                if (myself)
+                {
+                    res = AddMyHitDamage(time, dest, num, numrate, crit, entities);
+                }
+                else if(ptmember)
+                {
+                    res = AddPTMemberHitDamage(time, dest, num, numrate, crit, entities);
+                }
+                else if (pets)
+                {
+                    res = AddPetHitDamage(time, dest, num, numrate, crit, entities);
+                }
                 TuikaDmgPerson = null;
                 return;
             }
             #endregion
 
             #region アクション実行
-            if (log.ActionType == 0x2B&&logbody.EndsWith("」"))
+            if (log.ActionType == 0x2B && logbody.EndsWith("」"))
             {//アクション DONE
                 res = AddActionDone(time, src, action, entities);
+                return;
+            }
+            #endregion
+
+            #region アクションミス
+
+            if (log.ActionType == 0xAA||log.ActionType==0x2A)//ミス
+            {
+                if (myself)
+                {
+                    res = AddMyActionMiss(time,dest,ineffective,entities);
+                }
+                else if (ptmember)
+                {
+                    res = AddPTMemberActionMiss(time, dest, ineffective, entities);
+                }
+                else if (pets)
+                {
+                    res = AddPetActionMiss(time, dest, ineffective, entities);
+                }
                 return;
             }
             #endregion
@@ -215,7 +238,10 @@ namespace PrecisionRep
                         z=src_ent.Z;
                     }
                     person.DestEntList.Clear();
-                    person.DestEntList.AddRange(Helper.FindEntityAt(x, y,z,5, entities));
+                    float range = 5;
+                    if (person.PersonType == PersonType.Pet) range = 4;
+                    if (action == "ホーリー") range = 8;
+                    person.DestEntList.AddRange(Helper.FindEntityAt(x, y,z,range, entities));
                 }
             }
             actiondoneList.Add(actiondone);
@@ -270,7 +296,7 @@ namespace PrecisionRep
         /// </summary>
         /// <param name="src"></param>
         /// <param name="action"></param>
-        private object AddHitDamage(DateTime time, string dest, int dmg, int dmgrate, bool crit, Entity[] entities)
+        private object AddPTMemberHitDamage(DateTime time, string dest, int dmg, int dmgrate, bool crit, Entity[] entities)
         {
             List<DDPerson> personlist = new List<DDPerson>();
             if (TuikaDmgPerson != null)
@@ -281,14 +307,22 @@ namespace PrecisionRep
                 TuikaDmgPerson = null;
                 return adddmg;
             }
-            foreach (DDPerson person in ddpersonList.Where(obj => obj.lastDDAction != null))//&&obj.PersonType== PersonType.PTMember
+            foreach (DDPerson person in ddpersonList.Where(obj => obj.lastDDAction != null&&obj.PersonType==PersonType.PTMember))//&&obj.PersonType== PersonType.PTMember
             {
+                ActionDone[] dones = person.GetActionDones();
+                if (dones[dones.Length - 1].timestamp.AddSeconds(1) < time)
+                {//時間切れ
+                    person.lastDDAction = null;
+                    continue;
+                }
                 if (person.lastDDAction.Area && person.DestEntList.Count(obj=>obj.Name==dest)==0)
                 {//範囲でリストがないものは除外
                     continue;
                 }
                 personlist.Add(person);
             }
+            //ソート
+            personlist.Sort(delegate(DDPerson a, DDPerson b) { return a.lastDDAction.Area.CompareTo(b.lastDDAction.Area); });
 
             if (personlist.Count == 0)
             {//ない
@@ -311,15 +345,31 @@ namespace PrecisionRep
             {//ひとり
                 DDPerson person = personlist[0];
                 Entity srcEnt = Helper.FindEntityByName(person.Name, entities);
-                Entity destEnt = Helper.FindEntityByID(srcEnt.TargetId, entities);
+                Entity destEnt = null;
+
+                if (person.lastDDAction.Area)
+                {
+
+                    foreach (Entity _ent in person.DestEntList.Where(obj => obj.Name == dest))
+                    {
+                        destEnt = _ent;
+                        person.DestEntList.Remove(destEnt);
+                        break;
+                    }
+                }
+                else
+                {
+                    destEnt = Helper.FindEntityByID(srcEnt.TargetId, entities);
+                    if (destEnt == null)
+                    {
+                        destEnt = Helper.FindEntityByName(dest, entities);
+                    }
+                }
                 ActionDD dd = person.AddActionDD(time, person.lastDDAction.ActionName, destEnt, srcEnt, dmg, dmgrate, crit);
                 if (!person.lastDDAction.Area)
                 {
                     person.lastDDAction = null;
-                }
-                else
-                {
-                    person.DestEntList.Remove(destEnt);
+
                 }
                 return dd;
             }
@@ -365,6 +415,7 @@ namespace PrecisionRep
                         person = p;
                         destEnt = _destEnt;
                         srcEnt = _srcEnt;
+                        if (zure < 0.2) break;
                     }
                 }
                 if (person == null)
@@ -384,6 +435,157 @@ namespace PrecisionRep
                 return actiondd;
             }
         }
-        string[] selfae = new string[] { "ホーリー", "サークル・オブ・ドゥーム", "シュトルムヴィント", "リング・オブ・ソーン","ブリザラ","" };
+
+        /// <summary>
+        /// PTメンバーのミス
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="action"></param>
+        private object AddPTMemberActionMiss(DateTime time, string dest, bool ineffective, Entity[] entities)
+        {
+            List<DDPerson> personlist = new List<DDPerson>();
+            foreach (DDPerson person in ddpersonList.Where(obj => obj.lastDDAction != null && obj.PersonType == PersonType.PTMember))
+            {
+                if (person.lastDDAction.Area && person.DestEntList.Count(obj => obj.Name == dest) == 0)
+                {//範囲でリストがないものは除外
+                    continue;
+                }
+                personlist.Add(person);
+            }
+            personlist.Sort(delegate(DDPerson a, DDPerson b) { return a.lastDDAction.Area.CompareTo(b.lastDDAction.Area); });
+            if (personlist.Count == 0)
+            {//ない
+                Console.WriteLine("ミスした対象がありません。エラー");
+                return null;
+            }
+            else if (personlist.Count == 1)
+            {//ひとり
+                DDPerson person = personlist[0];
+                Entity srcEnt = Helper.FindEntityByName(person.Name, entities);
+                Entity destEnt = null;
+
+                if (person.lastDDAction.Area)
+                {
+                    foreach (Entity _ent in person.DestEntList.Where(obj => obj.Name == dest))
+                    {
+                        destEnt = _ent;
+                        person.DestEntList.Remove(destEnt);
+                        break;
+                    }
+                }
+                else
+                {
+                    destEnt = Helper.FindEntityByID(srcEnt.TargetId, entities);
+                    if (destEnt == null)
+                    {
+                        destEnt = Helper.FindEntityByName(dest, entities);
+                    }
+                }
+                ActionMiss miss = person.AddActioMiss(time, destEnt, srcEnt,ineffective);
+                if (!person.lastDDAction.Area)
+                {
+                    person.lastDDAction = null;
+
+                }
+                return miss;
+            }
+            else
+            {//複数
+                double minspan = double.MaxValue;
+                DDPerson person = null;
+                Entity srcEnt = null;
+                Entity destEnt = null;
+                foreach (DDPerson p in personlist)
+                {
+                    Entity _srcEnt = Helper.FindEntityByName(p.Name, entities);
+
+                    Entity _destEnt = null;
+                    if (p.lastDDAction.Area)
+                    {
+
+                        foreach (Entity _ent in p.DestEntList.Where(obj => obj.Name == dest))
+                        {
+                            _destEnt = _ent;
+                        }
+                    }
+                    else
+                    {
+                        _destEnt = Helper.FindEntityByID(_srcEnt.TargetId, entities);
+                        if (_destEnt == null)
+                        {
+                            _destEnt = Helper.FindEntityByName(dest, entities);
+                        }
+                    }
+                    if (_destEnt == null) continue;
+
+                    ActionDone[] actions = p.GetActionDones();
+                    ActionDone lastactiondone = actions[actions.Length-1];
+                    DateTime actiontime = lastactiondone.timestamp;
+                    double span = (time - actiontime).TotalSeconds;
+
+
+                    if (span < minspan)
+                    {
+                        minspan = span;
+                        person = p;
+                        destEnt = _destEnt;
+                        srcEnt = _srcEnt;
+                    }
+                }
+                if (person == null)
+                {
+                    Console.WriteLine("エラー");
+                    return null;
+                }
+                if (person.lastDDAction.Area)
+                {
+                    person.DestEntList.Remove(destEnt);
+                }
+                ActionMiss actionmiss = person.AddActioMiss(time, destEnt, srcEnt, ineffective);
+                if (!person.lastDDAction.Area)
+                {
+                    person.lastDDAction = null;
+                }
+                return actionmiss;
+            }
+        }
+
+        /// <summary>
+        /// 自身のミス
+        /// </summary>
+        /// <param name="src"></param>
+        /// <param name="action"></param>
+        private object AddMyActionMiss(DateTime time, string dest, bool ineffective, Entity[] entities)
+        {
+            Entity srcEnt = Helper.FindEntityByName(MySelf.Name, entities);
+            Entity destEnt = null;
+
+            if (MySelf.lastDDAction.Area)
+            {
+                foreach (Entity _ent in MySelf.DestEntList.Where(obj => obj.Name == dest))
+                {
+                    destEnt = _ent;
+                    MySelf.DestEntList.Remove(destEnt);
+                    break;
+                }
+            }
+            else
+            {
+                destEnt = Helper.FindEntityByID(srcEnt.TargetId, entities);
+                if (destEnt == null)
+                {
+                    destEnt = Helper.FindEntityByName(dest, entities);
+                }
+            }
+            ActionMiss miss = MySelf.AddActioMiss(time, destEnt, srcEnt, ineffective);
+            if (!MySelf.lastDDAction.Area)
+            {
+                MySelf.lastDDAction = null;
+
+            }
+            return miss;
+        }
+        
+        string[] selfae = new string[] { "ホーリー", "サークル・オブ・ドゥーム", "シュトルムヴィント", "リング・オブ・ソーン","ブリザラ"};
     }
 }

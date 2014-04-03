@@ -49,6 +49,7 @@
     <Compile Include="AreaOfEffect.cs" />
     <Compile Include="BuffEffect.cs" />
     <Compile Include="ChatlogParser.cs" />
+    <Compile Include="ChatlogParserPet.cs" />
     <Compile Include="DDAction.cs" />
     <Compile Include="DDPerson.cs" />
     <Compile Include="DotBUFF.cs" />

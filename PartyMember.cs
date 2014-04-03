@@ -103,6 +103,18 @@ namespace ffxivlib
             return p;
         }
 
+        /// <summary>
+        ///  This function retrieves a PartyMember count
+        /// </summary>
+        /// <returns></returns>
+        public int GetPartyMemberCount()
+        {
+            IntPtr pointer = _mr.ResolvePointerPath(Constants.PTCOUNTPTR);
+            int a=0;
+            byte[] res= _mr.ReadAdress(pointer, 1, out a);
+            return (int)res[0];
+        }
+
         #endregion
     }
 }

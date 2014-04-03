@@ -8,6 +8,8 @@ namespace ffxivlib
     public struct BUFF
     {
         [MarshalAs(UnmanagedType.I2)] [FieldOffset(0)] public short BuffID;
+        //追加してみる
+        [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x2)] public short Count; 
         [MarshalAs(UnmanagedType.R4)] [FieldOffset(0x4)] public float TimeLeft;
         [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x8)] public int BuffProvider;
     };

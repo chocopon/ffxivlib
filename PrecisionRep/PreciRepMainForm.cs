@@ -22,6 +22,9 @@ namespace PrecisionRep
 
         List<EntitiesSnap> EntitySnapList;
 
+        string[] PetNames = new string[] { "カーバンクル・エメラルド", "カーバンクルトパーズ", "タイタン・エギ", "ガルーダ・エギ", "イフリート・エギ" };
+
+
         public PreciRepMainForm()
         {
             InitializeComponent();
@@ -36,7 +39,7 @@ namespace PrecisionRep
         /// <param name="e"></param>
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            InitalizeRep();
+            InitializeRep();
             while (!backgroundWorker1.CancellationPending)
             {
                 UpdateRep();
@@ -55,9 +58,9 @@ namespace PrecisionRep
         /// <summary>
         /// REPの初期化
         /// </summary>
-        private void InitalizeRep()
+        private void InitializeRep()
         {
-                lib = new FFXIVLIB();
+            lib = new FFXIVLIB();
             chatlog = lib.GetChatlog();
             RepPersonList.Clear();
             Entities = GetEntities();
@@ -65,13 +68,17 @@ namespace PrecisionRep
             EntitySnapList.Add(new EntitiesSnap(DateTime.Now, Entities));
             chatlogparser = new ChatlogParser();
 
+            bool PetMaster = false;
+
             //自分
             Entity myself = Entities[0];
-            MyRepPerson = new RepPerson(myself, PersonType.MySelf);
+            MyRepPerson = new RepPerson(myself.Name, PersonType.MySelf,myself.Job);
             RepPersonList.Add(MyRepPerson);
             chatlogparser.AddDDPerson(MyRepPerson.ddperson);
-
-            //PTメンバー
+            if (myself.Job == JOB.ACN || myself.Job == JOB.SMN || myself.Job == JOB.SCH)
+            {
+                PetMaster = true;
+            }            //PTメンバー
             for (int i = 0; i < 8; i++)
             {
                 PartyMember pm = lib.GetPartyMemberInfo(i);
@@ -83,12 +90,36 @@ namespace PrecisionRep
                     {
                         if (ent.Name == pm.Name)
                         {
-                            RepPerson repperson = new RepPerson(ent, PersonType.PTMember);
+                            RepPerson repperson = new RepPerson(ent.Name, PersonType.PTMember,ent.Job);
                             RepPersonList.Add(repperson);
                             chatlogparser.AddDDPerson(repperson.ddperson);
+                            if (ent.Job == JOB.ACN || ent.Job == JOB.SMN || ent.Job == JOB.SCH)
+                            {
+                                PetMaster = true;
+                            }
                             break;
                         }
                     }
+                }
+            }
+            //ペット
+            if (PetMaster)
+            {
+                foreach (string petname in PetNames)
+                {
+                    JOB job = JOB.PGL;
+                    if (petname == "カーバンクル・トパーズ" || petname == "タイタン・エギ")
+                    {
+                        job = JOB.GLD;
+                    }
+                    if (petname == "カーバンクル・エメラルド" || petname == "ガルーダ・エギ")
+                    {
+                        job = JOB.THM;
+                    }
+
+                    RepPerson repperson = new RepPerson(petname, PersonType.Pet, job);
+                    RepPersonList.Add(repperson);
+                    chatlogparser.AddDDPerson(repperson.ddperson);
                 }
             }
             //chatlog clear
@@ -171,64 +202,6 @@ namespace PrecisionRep
                     {
                         Parsing(res, row);
                     }
-                    ////自分
-                    //if (row.LogType == "myself")
-                    //{
-                    //    if (MyRepPerson.UpdateDDByChatlog(time, log, out res))
-                    //    {
-                    //        Parsing(res, row);
-                    //        goto next;
-                    //    }
-                    //    goto next;
-                    //}
-
-
-                    //foreach (RepPerson person in RepPersonList)
-                    //{
-                    //    if (person.LastDDAction != null && !person.LastDDAction.Area)
-                    //    {//単発攻撃のアクション
-                    //        if (person.UpdateDDByChatlog(time, log, out res))
-                    //        {
-                    //            Parsing(res, row);
-                    //            goto next;
-                    //        }
-                    //    }
-                    //}
-
-                    //foreach (RepPerson person in RepPersonList)
-                    //{
-                    //    if (person.LastDDAction != null && person.LastDDAction.Area)
-                    //    {//範囲攻撃
-                    //        if (person.UpdateDDByChatlog(time, log, out res))
-                    //        {
-                    //            Parsing(res, row);
-                    //            goto next;
-                    //        }
-                    //    }
-                    //}
-                    //foreach (RepPerson person in RepPersonList)
-                    //{
-                    //    if (person.UpdateDDByChatlog(time, log, out res))
-                    //    {
-                    //        Parsing(res, row);
-                    //        goto next;
-                    //    }
-                    //}
-                    //foreach (RepPerson person in RepPersonList)
-                    //{
-                    //    if (person.LastDDAction != null && !person.LastDDAction.Area)
-                    //    {//単発攻撃のアクションに強制追加
-                    //        if (person.UpdateDDByChatlog(time, log, out res, true))
-                    //        {
-                    //            Parsing(res, row);
-                    //            goto next;
-                    //        }
-                    //    }
-                    //}
-
-
-                next:
-                    continue;
                 }
             }
 
@@ -459,36 +432,7 @@ namespace PrecisionRep
 
         private void RefreshLogButton_Click(object sender, EventArgs e)
         {
-            preciRepDataSet2.ParsingReport.Merge(preciRepDataSet1.ParsingReport);
-        }
-
-        private void OpenTestFileButton_Click(object sender, EventArgs e)
-        {
-            if (openTestFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                TestFileBox.Text = openTestFileDialog.FileName;
-                Properties.Settings.Default.Save();
-            }
-        }
-
-        private void TestButton_Click(object sender, EventArgs e)
-        {
-            //try
-            //{
-            //    DDPerson person = new DDPerson("
-            //    string text = System.IO.File.ReadAllText(TestFileBox.Text);
-            //    string[] lines = text.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            //    foreach (string line in lines)
-            //    {
-            //        string[] items = line.Split('\t');
-            //        int logtype = Convert.ToInt32(items[4].Substring(0, 2), 16);
-            //        int actiontype = Convert.ToInt32(items[4].Substring(2, 2), 16);                  
-            //    }
-            //}
-            //catch (Exception _e)
-            //{
-            //    MessageBox.Show(_e.Message);
-            //}
+            preciRepDataSet2.ParsingReport.Merge(preciRepDataSet1.ParsingReport.Copy());
         }
 
     }

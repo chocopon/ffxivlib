@@ -420,12 +420,12 @@ namespace ffxivlib
 
             #region PvP Stats
 
-            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x755)] public byte PvpLevel;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x756)] public short PvpTotalEXP;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x758)] public short PvpTotalMatches;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x75A)] public short PvpTotalWins;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x75C)] public short PvpWeeklyMatches;
-            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x75E)] public short PvpWeeklyWins;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x8F0)] public short PvpTotalEXP;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x8F2)] public short PvpWeeklyMatches;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x8F4)] public short PvpWeeklyWins;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x8F6)] public byte PvpLevel;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x8FC)] public short PvpTotalMatches;
+            [MarshalAs(UnmanagedType.I2)] [FieldOffset(0x8FE)] public short PvpTotalWins;
 
             #endregion
         };

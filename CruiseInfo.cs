@@ -63,7 +63,7 @@ namespace ffxivlib
         #region Pointer paths
         internal static readonly List<int> CRUISEPTR = new List<int>
         {
-        0x11C2204,
+        0xF89F54,
         //        0x100
         #endregion
         };

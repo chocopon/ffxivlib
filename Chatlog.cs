@@ -97,6 +97,7 @@ namespace ffxivlib
             _previousArrayIndex = currentArrayIndex;
         }
 
+
         #endregion
 
         #region Public methods
@@ -122,6 +123,19 @@ namespace ffxivlib
             _buffer.Clear();
             return newList;
         }
+
+        ///// <summary>
+        ///// This method is forward _previousArrayIndex to currentArrayIndex
+        ///// </summary>
+        //public void ClearChatLogLines()
+        //{
+        //    UpdateOffsetArray();
+        //    Structure = _mr.CreateStructFromAddress<CHATLOGINFO>(Address);
+        //    int currentArrayIndex = (Structure.ArrayCurrent - Structure.ArrayStart) / 4;
+        //    _buffer.Clear();
+        //    _previousArrayIndex = currentArrayIndex;
+        //}
+
 
         #endregion
 

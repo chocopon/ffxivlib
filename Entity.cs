@@ -28,6 +28,8 @@ namespace ffxivlib
 
         public int NPCId { get; set; }
 
+        public int PetMasterID { get; set; }
+
         public TYPE MobType { get; set; }
 
         public CURRENTTARGET CurrentTarget { get; set; }
@@ -44,9 +46,14 @@ namespace ffxivlib
 
         public float Heading { get; set; }
 
+        public float HitCircleA { get; set; }
+        public float HitCircleB { get; set; }
+        public float HitCircleC { get; set; }
         public float HitCircleR { get; set; }
 
         public byte GatheringInvisible { get; set; }
+        public byte Invisible { get; set; }
+        public byte Unclickable { get; set; }
 
         public int ModelID { get; set; }
 
@@ -135,6 +142,7 @@ namespace ffxivlib
             // Not exactly PC ID...
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x74)] public int PCId;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x78)] public int NPCId;
+            [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x84)] public int PetMasterID;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x8A)] public TYPE MobType;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x8C)] public CURRENTTARGET CurrentTarget;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x8D)] public byte Distance;
@@ -143,8 +151,13 @@ namespace ffxivlib
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xA4)] public float Z;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xA8)] public float Y;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xB0)] public float Heading;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xB4)] public float HitCircleA;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xB8)] public float HitCircleB;
+            [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xBC)] public float HitCircleC;
             [MarshalAs(UnmanagedType.R4)] [FieldOffset(0xC0)] public float HitCircleR;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x11C)] public byte GatheringInvisible;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x11D)] public byte Invisible;
+            [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x11E)] public byte Unclickable;
             [MarshalAs(UnmanagedType.I4)] [FieldOffset(0x174)] public int ModelID;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x18C)] public ENTITYSTATUS PlayerStatus;
             [MarshalAs(UnmanagedType.I1)] [FieldOffset(0x189)] public bool IsGM;
@@ -314,6 +327,11 @@ namespace ffxivlib
                     pointerPath = Constants.GATHERINGPTR;
                     arraySize = Constants.GATHERING_ARRAY_SIZE;
                 }
+            if (type == TYPE.NPC)
+            {
+                pointerPath = Constants.NPCPTR;
+                arraySize = Constants.NPC_ARRAY_SIZE;
+            }
             IntPtr pointer = _mr.GetArrayStart(pointerPath);
             var entityList = new List<Entity>();
             for (int i = 0; i < arraySize; i++)

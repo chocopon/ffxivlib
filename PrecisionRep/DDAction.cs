@@ -158,6 +158,29 @@ namespace PrecisionRep
             list.Add(new DDAction(203, "スカイシャード", 1650, 1650, true, 7, 26, 27));
             list.Add(new DDAction(204, "プチメテオ", 3600, 3600, true, 7, 26, 27));
             list.Add(new DDAction(205, "メテオ", 6150, 6150, true, 7, 26, 27));
+            //ペット
+            list.Add(new DDAction(633, "ひっかき", 70, 70, false, 26, 27, 28));
+            list.Add(new DDAction(634, "トパーズの輝き", 60, 60, false, 26, 27, 28));
+            list.Add(new DDAction(636, "体当たり", 60, 60, false, 26, 27, 28));
+            list.Add(new DDAction(637, "ガスト", 90, 90, false, 26, 27, 28));
+            list.Add(new DDAction(638, "ふきとばし", 80, 80, false, 26, 27, 28));
+            list.Add(new DDAction(639, "ダウンバースト", 80, 80, false, 26, 27, 28));
+
+            list.Add(new DDAction(787, "ロックバスター", 85, 85, false, 26, 27, 28));
+            list.Add(new DDAction(788, "マウンテンバスター", 70, 70, true, 26, 27, 28));
+            list.Add(new DDAction(790, "ランドスライド", 70, 70, false, 26, 27, 28));
+            list.Add(new DDAction(791, "大地の怒り", 200, 200, false, 26, 27, 28));
+
+            list.Add(new DDAction(792, "ウィンドブレード", 100, 100, false, 26, 27, 28));
+            list.Add(new DDAction(793, "ショックウェーブ", 90, 90, false, 26, 27, 28));
+            list.Add(new DDAction(794, "エリアルスラッシュ", 90, 90, true, 26, 27, 28));
+            list.Add(new DDAction(796, "エリアルブラスト", 250, 250, false, 26, 27, 28));
+
+            list.Add(new DDAction(797, "クリムゾンサイクロン", 105, 105, false, 26, 27, 28));
+            list.Add(new DDAction(798, "バーニングストライク", 120, 120, false, 26, 27, 28));
+            list.Add(new DDAction(800, "フレイミングクラッシュ", 105, 105, true, 26, 27, 28));
+            list.Add(new DDAction(801, "地獄の火炎", 200, 200, true, 26, 27, 28));
+
 
             return list.ToArray();
         }

@@ -10,40 +10,44 @@ public static partial class Constants
     // Simple representation of pointer paths, do not add base module, last member will be expected to be the offset so may have to add extra 0 at the end if you dont need it
     internal static readonly List<int> PCPTR = new List<int>
         {
-            0xFBA384,//2.15 0x0119A514,
+           0xF643E4, //2.2
             0x0
         };
 
     internal static readonly List<int> GATHERINGPTR = new List<int>
         {
-            0xFB3B68,//2.15　0x1193FC8,
+            0xF5D908,//2.2
             0x0
         };
+
+    internal static readonly List<int> NPCPTR = new List<int>()
+    {
+        0xF5D9A8,//2.2
+        0x0
+    };
     
     internal static readonly List<int> PARTYPTR = new List<int>
         {
-            0x477FC,
+            0x4816C,//2.2
             0x10
         };
 
     internal static readonly List<int> TARGETPTR = new List<int>
         {
-            //0x00C87524,//for japanese version
-            //0x28
-            0xE912A8//2.16
+            0xE3C038//2.2
         };
 
     internal static readonly List<int> PLAYERPTR = new List<int>
         {
-            0x342260,//2.16 FBB9E0
+            0x34D600,//2.2
             0x0
         };
 
     internal static readonly List<int> CHATPTR = new List<int>
         {
-            0xE8D6A8,//0x106EB98,//from master 2.16
+            0xE38420,//2.2
             0x18,
-            0x204
+            0x200//2.2
         };
     internal static readonly List<int> INVENTORYPTR = new List<int>
         {
@@ -71,6 +75,11 @@ public static partial class Constants
         0x4
     };
 
+    internal static readonly List<int> PTCOUNTPTR = new List<int>
+    {
+        0xF86B8C,//2.2
+    };
+
     #endregion
 
     #region Array size
@@ -79,6 +88,7 @@ public static partial class Constants
     internal const uint ENTITY_ARRAY_SIZE = 100;
     internal const uint PARTY_MEMBER_ARRAY_SIZE = 8;
     internal const uint GATHERING_ARRAY_SIZE = 40;
+    internal const uint NPC_ARRAY_SIZE = 60;
 
     #endregion
 

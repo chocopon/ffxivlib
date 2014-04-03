@@ -8,6 +8,7 @@
     public enum JOB : byte
     {
 // ReSharper disable InconsistentNaming
+        SPN = 0x0,
         GLD = 0x1,
         PGL = 0x2,
         MRD = 0x3,

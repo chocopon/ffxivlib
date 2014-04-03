@@ -537,5 +537,20 @@ namespace ffxivlib
         {
             Ski.SendKeyPress((SendKeyInput.VKKeys) key, keyup, delay);
         }
+
+        /// <summary>
+        /// チャット入力
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="delay"></param>
+        public void ConverToTextToInputM(string text, int delay=300)
+        {
+            Ski.ConverToTextToInputM(text, delay);
+        }
+
+        public void SendReturnKey(int delay = 100)
+        {
+            Ski.SendReturnKey(delay);
+        }
     }
 }

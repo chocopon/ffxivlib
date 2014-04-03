@@ -29,14 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             this.ResetButton = new System.Windows.Forms.Button();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -84,9 +84,6 @@
             this.ParsingBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.preciRepDataSet2 = new PrecisionRep.PreciRepDataSet();
             this.RefleshButton = new System.Windows.Forms.Button();
-            this.TestButton = new System.Windows.Forms.Button();
-            this.TestFileBox = new System.Windows.Forms.TextBox();
-            this.OpenTestFileButton = new System.Windows.Forms.Button();
             this.openTestFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -165,14 +162,14 @@
             this.doTCountDataGridViewTextBoxColumn,
             this.damageBaseDataGridViewTextBoxColumn});
             this.dataGridView1.DataSource = this.RepBindingSource;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight;
+            dataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Verdana", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle15;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(3, 3);
             this.dataGridView1.Name = "dataGridView1";
@@ -184,8 +181,8 @@
             // playerNameDataGridViewTextBoxColumn
             // 
             this.playerNameDataGridViewTextBoxColumn.DataPropertyName = "PlayerName";
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.playerNameDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.playerNameDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle9;
             this.playerNameDataGridViewTextBoxColumn.HeaderText = "PlayerName";
             this.playerNameDataGridViewTextBoxColumn.Name = "playerNameDataGridViewTextBoxColumn";
             this.playerNameDataGridViewTextBoxColumn.ReadOnly = true;
@@ -193,8 +190,8 @@
             // jobDataGridViewTextBoxColumn
             // 
             this.jobDataGridViewTextBoxColumn.DataPropertyName = "Job";
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            this.jobDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            this.jobDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle10;
             this.jobDataGridViewTextBoxColumn.HeaderText = "Job";
             this.jobDataGridViewTextBoxColumn.Name = "jobDataGridViewTextBoxColumn";
             this.jobDataGridViewTextBoxColumn.ReadOnly = true;
@@ -209,9 +206,9 @@
             // totalDamageDataGridViewTextBoxColumn
             // 
             this.totalDamageDataGridViewTextBoxColumn.DataPropertyName = "TotalDamage";
-            dataGridViewCellStyle3.Format = "N0";
-            dataGridViewCellStyle3.NullValue = null;
-            this.totalDamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle11.Format = "N0";
+            dataGridViewCellStyle11.NullValue = null;
+            this.totalDamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle11;
             this.totalDamageDataGridViewTextBoxColumn.HeaderText = "TotalDamage";
             this.totalDamageDataGridViewTextBoxColumn.Name = "totalDamageDataGridViewTextBoxColumn";
             this.totalDamageDataGridViewTextBoxColumn.ReadOnly = true;
@@ -226,8 +223,8 @@
             // dDamageDataGridViewTextBoxColumn
             // 
             this.dDamageDataGridViewTextBoxColumn.DataPropertyName = "DDamage";
-            dataGridViewCellStyle4.Format = "N0";
-            this.dDamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle12.Format = "N0";
+            this.dDamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle12;
             this.dDamageDataGridViewTextBoxColumn.HeaderText = "DDamage";
             this.dDamageDataGridViewTextBoxColumn.Name = "dDamageDataGridViewTextBoxColumn";
             this.dDamageDataGridViewTextBoxColumn.ReadOnly = true;
@@ -235,8 +232,8 @@
             // aADamageDataGridViewTextBoxColumn
             // 
             this.aADamageDataGridViewTextBoxColumn.DataPropertyName = "AADamage";
-            dataGridViewCellStyle5.Format = "N0";
-            this.aADamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle13.Format = "N0";
+            this.aADamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle13;
             this.aADamageDataGridViewTextBoxColumn.HeaderText = "AADamage";
             this.aADamageDataGridViewTextBoxColumn.Name = "aADamageDataGridViewTextBoxColumn";
             this.aADamageDataGridViewTextBoxColumn.ReadOnly = true;
@@ -244,8 +241,8 @@
             // dotDamageDataGridViewTextBoxColumn
             // 
             this.dotDamageDataGridViewTextBoxColumn.DataPropertyName = "DotDamage";
-            dataGridViewCellStyle6.Format = "N0";
-            this.dotDamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle14.Format = "N0";
+            this.dotDamageDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle14;
             this.dotDamageDataGridViewTextBoxColumn.HeaderText = "DotDamage";
             this.dotDamageDataGridViewTextBoxColumn.Name = "dotDamageDataGridViewTextBoxColumn";
             this.dotDamageDataGridViewTextBoxColumn.ReadOnly = true;
@@ -440,9 +437,9 @@
             // dateTimeDataGridViewTextBoxColumn
             // 
             this.dateTimeDataGridViewTextBoxColumn.DataPropertyName = "DateTime";
-            dataGridViewCellStyle8.Format = "T";
-            dataGridViewCellStyle8.NullValue = null;
-            this.dateTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle16.Format = "T";
+            dataGridViewCellStyle16.NullValue = null;
+            this.dateTimeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle16;
             this.dateTimeDataGridViewTextBoxColumn.HeaderText = "DateTime";
             this.dateTimeDataGridViewTextBoxColumn.Name = "dateTimeDataGridViewTextBoxColumn";
             this.dateTimeDataGridViewTextBoxColumn.ReadOnly = true;
@@ -524,35 +521,6 @@
             this.RefleshButton.UseVisualStyleBackColor = true;
             this.RefleshButton.Click += new System.EventHandler(this.RefreshLogButton_Click);
             // 
-            // TestButton
-            // 
-            this.TestButton.Location = new System.Drawing.Point(727, 31);
-            this.TestButton.Name = "TestButton";
-            this.TestButton.Size = new System.Drawing.Size(60, 23);
-            this.TestButton.TabIndex = 11;
-            this.TestButton.Text = "Test";
-            this.TestButton.UseVisualStyleBackColor = true;
-            this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
-            // 
-            // TestFileBox
-            // 
-            this.TestFileBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::PrecisionRep.Properties.Settings.Default, "TestFileName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.TestFileBox.Location = new System.Drawing.Point(525, 6);
-            this.TestFileBox.Name = "TestFileBox";
-            this.TestFileBox.Size = new System.Drawing.Size(262, 19);
-            this.TestFileBox.TabIndex = 12;
-            this.TestFileBox.Text = global::PrecisionRep.Properties.Settings.Default.TestFileName;
-            // 
-            // OpenTestFileButton
-            // 
-            this.OpenTestFileButton.Location = new System.Drawing.Point(793, 4);
-            this.OpenTestFileButton.Name = "OpenTestFileButton";
-            this.OpenTestFileButton.Size = new System.Drawing.Size(27, 23);
-            this.OpenTestFileButton.TabIndex = 13;
-            this.OpenTestFileButton.Text = "...";
-            this.OpenTestFileButton.UseVisualStyleBackColor = true;
-            this.OpenTestFileButton.Click += new System.EventHandler(this.OpenTestFileButton_Click);
-            // 
             // openTestFileDialog
             // 
             this.openTestFileDialog.FileName = "openFileDialog1";
@@ -563,9 +531,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(888, 530);
             this.Controls.Add(this.LocationLabel);
-            this.Controls.Add(this.OpenTestFileButton);
-            this.Controls.Add(this.TestFileBox);
-            this.Controls.Add(this.TestButton);
             this.Controls.Add(this.RefleshButton);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.FocusTargetLabel);
@@ -644,9 +609,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn numDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn srcBuffsDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn destBuffsDataGridViewTextBoxColumn;
-        private System.Windows.Forms.Button TestButton;
-        private System.Windows.Forms.TextBox TestFileBox;
-        private System.Windows.Forms.Button OpenTestFileButton;
         private System.Windows.Forms.OpenFileDialog openTestFileDialog;
     }
 }

@@ -51,33 +51,29 @@ namespace PrecisionRep
 
 
        
-        public RepPerson(Entity ent, PersonType persontype)
+        //public RepPerson(Entity ent, PersonType persontype)
+        //{
+        //    this.name = ent.Name;
+        //    PersonType t = persontype;
+        //    if(t!= PersonType.MySelf&& t!= PersonType.PTMember)
+        //    {
+        //        throw new Exception("自身かパーティメンバーしか実装してないっす");
+        //    }
+        //    ddperson = new DDPerson(name, t,(int)ent.Job);
+        //    buffperson = new BuffPerson(name);
+        //    EntitiesSnapList = new List<EntitiesSnap>();
+        //}
+
+        public RepPerson(string name, PersonType persontype,JOB job)
         {
-            this.name = ent.Name;
-            PersonType t = persontype;
-            if(t!= PersonType.MySelf&& t!= PersonType.PTMember)
+            if (persontype != PersonType.MySelf && persontype != PersonType.PTMember && persontype!= PersonType.Pet)
             {
-                throw new Exception("自身かパーティメンバーしか実装してないっす");
+                throw new Exception("自身かパーティメンバーかペットで実装してあるっす");
             }
-            ddperson = new DDPerson(name, t, ent.PCId,(int)ent.Job);
+            this.name = name;
+            ddperson = new DDPerson(name, persontype, (int)job);
             buffperson = new BuffPerson(name);
             EntitiesSnapList = new List<EntitiesSnap>();
-        }
-
-        /// <summary>
-        /// チャットログからDDを更新
-        /// </summary>
-        /// <param name="log"></param>
-        public bool UpdateDDByChatlog(DateTime time,FFXIVLog log,out object res, bool force=false)
-        {
-            res = null;
-
-            EntitiesSnap entsnap = FindEntitiesSnap(time);
-            if (entsnap != null)
-            {
-                return ddperson.Storage((int)log.LogType, (int)log.ActionType, log.LogBodyReplaceTabCode, time, entsnap.Entities, out res, force);
-            }
-            return false;
         }
 
         /// <summary>
