@@ -65,6 +65,10 @@ namespace ffxivlib
         /// <returns>The single MR instance</returns>
         public static MemoryReader SetInstance(Process ffxivProcess)
         {
+            if (_instance != null && _instance._ffxivProcess.Id!=ffxivProcess.Id)
+            {
+                _instance = null;
+            }
             return _instance ?? (_instance = new MemoryReader(ffxivProcess));
         }
 
